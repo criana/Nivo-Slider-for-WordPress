@@ -13,24 +13,37 @@
 
 	?>
 	<div id="slider">
-				<?php $items = $wpdb->get_results("SELECT nivoslider4wp_id,nivoslider4wp_type,nivoslider4wp_text_headline,nivoslider4wp_image_link,nivoslider4wp_image_status FROM {$wpdb->prefix}nivoslider4wp WHERE nivoslider4wp_image_status = 1 OR nivoslider4wp_image_status IS NULL ORDER BY nivoslider4wp_order,nivoslider4wp_id"); ?>
-				<?php foreach($items as $item) : ?>
-						<?php
-						if(!$item->nivoslider4wp_image_link){ ?>
-						<img src="<?php echo $ns4wp_filesurl.$item->nivoslider4wp_id.'_s.'.$item->nivoslider4wp_type; ?>" alt="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>" title="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>"/>
-						<?php } else { ?>
-						<a href="<?php echo $item->nivoslider4wp_image_link;?>"><img src="<?php echo $ns4wp_filesurl.$item->nivoslider4wp_id.'_s.'.$item->nivoslider4wp_type; ?>" alt="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>" title="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>"/></a>
-						<?php } ?>
-				<?php endforeach; ?>
+			<?php $items = $wpdb->get_results("SELECT nivoslider4wp_id,nivoslider4wp_type,nivoslider4wp_text_headline,nivoslider4wp_image_link,nivoslider4wp_image_status FROM {$wpdb->prefix}nivoslider4wp WHERE nivoslider4wp_image_status = 1 OR nivoslider4wp_image_status IS NULL ORDER BY nivoslider4wp_order,nivoslider4wp_id"); ?>
+			<?php foreach($items as $item) : ?>
+					<?php
+					if(!$item->nivoslider4wp_image_link){ ?>
+					<img src="<?php echo $ns4wp_filesurl.$item->nivoslider4wp_id.'_s.'.$item->nivoslider4wp_type; ?>" alt="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>" title="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>"/>
+					<?php } else { ?>
+					<a href="<?php echo $item->nivoslider4wp_image_link;?>"><img src="<?php echo $ns4wp_filesurl.$item->nivoslider4wp_id.'_s.'.$item->nivoslider4wp_type; ?>" alt="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>" title="<?php echo stripslashes($item->nivoslider4wp_text_headline); ?>"/></a>
+					<?php } ?>
+			<?php endforeach; ?>
 		</div>
 	<?php
+	} 
+	
+	add_action('wp_enqueue_scripts', 'scripts_frontend');
+	function scripts_frontend() {
+		wp_deregister_script( 'jquery' );
+		wp_register_script( 'jquery', 'http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js');
+		wp_enqueue_script( 'jquery' );
+		
+		wp_deregister_script( 'ns4wp-nivoslider' );
+		if(get_option('nivoslider4wp_js') == 'head'){
+			wp_register_script( 'ns4wp-nivoslider', plugins_url('/js/jquery.nivo.slider.pack.js', __FILE__), '2.7.1', array('jquery'));
+		}else{
+			wp_register_script( 'ns4wp-nivoslider', plugins_url('/js/jquery.nivo.slider.pack.js', __FILE__), '2.7.1', array('jquery'), true); // 'true' load in footer
+		}
+		wp_enqueue_script( 'ns4wp-nivoslider' );
 	}
-
+	
 	/*conteudo que ora para dentro do <head>*/
 	function js_NivoSlider(){
-	?>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
-		<script type="text/javascript" src="<?php echo get_option('siteurl') . '/wp-content/plugins/nivo-slider-for-wordpress/js/jquery.nivo.slider.pack.js';?>"></script>
+	?>		
 		<script type="text/javascript">
 		var $nv4wp = jQuery.noConflict();
 		$nv4wp(window).load(function() {
@@ -67,12 +80,12 @@
 		}
 		function css_NivoSlider(){
 		?>
-		<link rel="stylesheet" type="text/css" href="<?php echo get_option('siteurl') . '/wp-content/plugins/nivo-slider-for-wordpress/css/nivoslider4wp.css'?>" />
+		<link rel="stylesheet" type="text/css" href="<?php echo plugins_url('/css/nivoslider4wp.css', __FILE__)?>" />
 		<style>
 		#slider{
 			width:<?php echo get_option('nivoslider4wp_width'); ?>px;
 			height:<?php echo get_option('nivoslider4wp_height'); ?>px;
-			background:transparent url(<?php echo plugins_url(plugin_basename(dirname(__FILE__))); ?>/css/images/loading.gif) no-repeat 50% 50%;
+			background:transparent url(<?php echo plugins_url('/css/images/loading.gif', __FILE__);?>) no-repeat 50% 50%;
 		}
 		.nivo-caption {
 			background:#<?php echo get_option('nivoslider4wp_backgroundCaption'); ?>;
