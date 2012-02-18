@@ -2,7 +2,7 @@
 	/*
 	Plugin Name: Nivo Slider for WordPress
 	Description: Nivo Slider for WordPress plugin is based on S3Slider developed by Vinicius Massuchetto, adapted for their use JQuery plugin NivoSlider.
-	Version: 0.3.3
+	Version: 0.3.4-beta
 	Author: Marcelo Torres
 	Author URI: http://www.marcelotorresweb.com/
 	*/
@@ -20,13 +20,13 @@
 	$nivoslider4wp_files = ABSPATH."wp-content/uploads/nivoslider4wp_files";
 	$nivoslider4wp_files_old = ABSPATH."wp-content/nivoslider4wp_files";
 
-	/* Cria a pasta (nivoslider4wp_files), onde ficarão as images do upload*/
+	/* Cria a pasta (nivoslider4wp_files), onde ficarÃ£o as images do upload*/
 	if (!file_exists($nivoslider4wp_files)) {
 		umask(0); 
 		mkdir($nivoslider4wp_files, 0777, true) or die("error creating the folder" . $nivoslider4wp_files . "check folder permissions");
 	}
 	
-	/* função para copiar o diretório inteiro */
+	/* funÃ§Ã£o para copiar o diretÃ³rio inteiro */
 	function copyr($source, $dest)
 	{
 	   if (is_file($source)) {
@@ -53,7 +53,7 @@
 		copyr($nivoslider4wp_files_old, $nivoslider4wp_files) or die("error moving the folder" . $nivoslider4wp_files . "check folder permissions");
 	}
 	
-	/* função para apagar o diretório inteiro */
+	/* funÃ§Ã£o para apagar o diretÃ³rio inteiro */
 	function rmdir_r($path)
 	{
 		if (!is_dir($path))
@@ -90,9 +90,9 @@
 		rmdir_r($nivoslider4wp_files_old) or die("error when deleting a folder" . $nivoslider4wp_files_old . "check folder permissions");
 	}
 	
-		global $wpdb;
+		global $wpdb, $plugin_addimages, $plugin_options;
 		/*adiciona menu e submenus*/
-		add_menu_page('Nivo Slider for WordPress', __('Nivo Slider For WordPress'), 'read', __FILE__, 'nivoslider4wp_panel', get_option('siteurl') . '/wp-content/plugins/nivo-slider-for-wordpress/img/menu.png');
+		add_menu_page('Nivo Slider', __('Nivo Slider'), 'read', __FILE__, 'nivoslider4wp_panel', get_option('siteurl') . '/wp-content/plugins/nivo-slider-for-wordpress/img/menu.png');
 		$plugin_addimages = add_submenu_page(__FILE__ , __('Add/Edit image', 'nivoslider4wp'), __('Add/Edit image', 'nivoslider4wp'), 'read', 'nivo-slider-for-wordpress/nivoslider4wp.php');
 		$plugin_options = add_submenu_page(__FILE__ , __('Options', 'nivoslider4wp'), __('Options', 'nivoslider4wp'), 'read', 'nivoslider4wp-options', 'nivoslider4wp_option');
 	
@@ -113,7 +113,7 @@
 		PRIMARY KEY ( `nivoslider4wp_id` ));";
 		$wpdb->query($query);
 
-		/* cria as opçoes no banco de dados e guarda um valor padr&atilde;o para campo da pagina de op&ccedil;&otilde;es*/
+		/* cria as opÃ§oes no banco de dados e guarda um valor padr&atilde;o para campo da pagina de op&ccedil;&otilde;es*/
 		add_option('nivoslider4wp_width', 640);
 		add_option('nivoslider4wp_height', 219);
 		
@@ -138,63 +138,81 @@
 		add_option('nivoslider4wp_imageQuality', '80');
 		
 		/* Add contextual Help $plugin_addimages */
-		if (function_exists('add_contextual_help')) {
-			add_contextual_help( $plugin_manageslider, '<h2 style="font-weight:lighter;">'. __('Nivo Slider for WordPress - Help > Add image', 'nivoslider4wp') .'</h2>'.
-				'<dl><dt><strong>'. __('Adding images:', 'nivoslider4wp') .'</strong></dt>'.
-				'<dd>'. __('To add a new image on your slider, click in buttom <em>Add new image</em>, then select the desired image(are supported JPG, PNG and GIF) and then click the button <em>send and edit image', 'nivoslider4wp') .'</em>.</dd>' .	
-				'<dt><strong>'. __('Image setting:', 'nivoslider4wp') .'</strong></dt>' .
-				'<dd>'. __('Once the image was sent, set the crop area and write caption below and the image link if you wish.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Image editing:', 'nivoslider4wp') .'</strong></dt>' .
-				'<dd>'. __('To edit the image after you have set your settings, click in the link <em>edit</em> aside the column\'s caption.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Excluding image:', 'nivoslider4wp') .'</strong></dt>' .
-				'<dd>'. __('To delete the image, click in the link <em>Remove</em> aside the column\'s caption.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Changing the display order of images:', 'nivoslider4wp') .'</strong></dt>' .
-				'<dd>'. __('To set the display order of images, click the line of the desired image and drag up or down until the order of images as you want.', 'nivoslider4wp') .'</dd>'.
-				'</dl>'
-			);
-		}
+		add_action("load-$plugin_addimages", 'ns4wp_add_help_tab');
 		
 		/* Add contextual Help $plugin_options */
-		if (function_exists('add_contextual_help')) {
-			add_contextual_help( $plugin_options ,'<h2 style="font-weight:lighter;">'. __('Nivo Slider for WordPress - Help > Options', 'nivoslider4wp') .'</h2>'.
-				'<h3>'. __('Size of the cut (it will also be the size of the slider):', 'nivoslider4wp') .'</h3>' .
-				'<p>'. __('This option sets the width and height in pixels in the corresponding fields. This will be the dimensions of the slider and the clipping of the image after uploading the same.', 'nivoslider4wp') .'</p>' .	
-				'<em style="color:red;">'. __('Important: if you change these dimensions after you have already inserted some image, will have to cut out the images again, so that they fit the dimensions defined.', 'nivoslider4wp') .'</em>' .
-				'<h3>'. __('Nivo Slider settings:', 'nivoslider4wp') .'</h3>'.
-				'<dl><dt><strong>'. __('Transition effects:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Select one of the effects to change the transition between each image.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Speed the transition from slide:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Speed that will show the selected transition.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Pause time between transitions:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Time that an image of the slider will be shown, happen until the transition to the next.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Navigation arrows:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, the use of arrows to advance or move back to the images on the slider will appear.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Show navigation arrows only when the mouse is on the slide:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, the navigation arrows will only appear when the mouse cursor is on the slider.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Show the navigation bullets:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, the user can move forward or backward through the images also utilize the bullets below the slider', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Use left and right on the keyboard:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, the user can move forward or backward through the images of the slider left navigation arrows (&larr;) and right (&rarr;) on the keyboard.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Stop the animation while the mouse is on the slide:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, animation (caption and transition) will not happen while the mouse is on the slider.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Force transition manual:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('If this option is enabled, the transition will not happen automatically.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Background color of the caption:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Changes the background color of the caption of every image of the slider. To change the color click the button next to the text field, and select the desired color in the color picker.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Text color of the caption:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Changes the color of the caption text of all the image of the slider. To change the color click the button next to the text field, and select the desired color in the color picker.', 'nivoslider4wp') .'</dd>'.
-				'<dt><strong>'. __('Opacity of the background caption:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Changes the background transparency of the caption of every image of the slider. Enter the desired value within a range from 0.0 to 10.0, eg 0.3.', 'nivoslider4wp') .'</dd>'.
-				'</dl>'.
-				'<h3>'. __('Advanced Options:', 'nivoslider4wp') .'</h3>'.
-				'<dl><dt><strong>'. __('Image quality:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Set value between 0 at 100 for define the quality of cut the images. Quality ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file). The default is 80.', 'nivoslider4wp') .'</dd>'.
-					'<dt><strong>'. __('Insert JavaScript:', 'nivoslider4wp') .'</strong></dt>'.
-					'<dd>'. __('Select the options head or footer for define where will loaded the scripts Jquery Plugin Nivo Slider. It is recommended to load the JavaScript in the <strong>footer</strong> because it allows a faster loading page, but the slider is loaded last.', 'nivoslider4wp') .'</dd>'.
-				'</dl>'
-			);
-		}
+		add_action("load-$plugin_options", 'ns4wp_add_help_tab');
+		
+		function ns4wp_add_help_tab() {
+			global $plugin_addimages, $plugin_options;
+			$screen = get_current_screen();
 
+			/*
+			 * Check if current screen is Add images
+			 * Don't add help tab if it's not
+			 */
+			if ( $screen->id == $plugin_addimages ){
+				// Add ns4wp_addimages if current screen is My Admin Page
+				$screen->add_help_tab( array(
+					'id'	=> 'ns4wp_addimages',
+					'title'	=> __('Add image', 'nivoslider4wp'),
+					'content'	=> 	'<dl><dt><strong>'. __('Adding images:', 'nivoslider4wp') .'</strong></dt>'.
+									'<dd>'. __('To add a new image on your slider, click in buttom <em>Add new image</em>, then select the desired image(are supported JPG, PNG and GIF) and then click the button <em>send and edit image', 'nivoslider4wp') .'</em>.</dd>' .	
+									'<dt><strong>'. __('Image setting:', 'nivoslider4wp') .'</strong></dt>' .
+									'<dd>'. __('Once the image was sent, set the crop area and write caption below and the image link if you wish.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Image editing:', 'nivoslider4wp') .'</strong></dt>' .
+									'<dd>'. __('To edit the image after you have set your settings, click in the link <em>edit</em> aside the column\'s caption.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Excluding image:', 'nivoslider4wp') .'</strong></dt>' .
+									'<dd>'. __('To delete the image, click in the link <em>Remove</em> aside the column\'s caption.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Changing the display order of images:', 'nivoslider4wp') .'</strong></dt>' .
+									'<dd>'. __('To set the display order of images, click the line of the desired image and drag up or down until the order of images as you want.', 'nivoslider4wp') .'</dd>'.
+									'</dl>'
+				) );
+			}
+			
+			if ( $screen->id == $plugin_options ){
+				// Add ns4wp_options if current screen is My Admin Page
+				$screen->add_help_tab( array(
+					'id'	=> 'ns4wp_options',
+					'title'	=> __('Options', 'nivoslider4wp'),
+					'content'	=> 	'<h3>'. __('Size of the cut (it will also be the size of the slider):', 'nivoslider4wp') .'</h3>' .
+									'<p>'. __('This option sets the width and height in pixels in the corresponding fields. This will be the dimensions of the slider and the clipping of the image after uploading the same.', 'nivoslider4wp') .'</p>' .	
+									'<em style="color:red;">'. __('Important: if you change these dimensions after you have already inserted some image, will have to cut out the images again, so that they fit the dimensions defined.', 'nivoslider4wp') .'</em>' .
+									'<h3>'. __('Nivo Slider settings:', 'nivoslider4wp') .'</h3>'.
+									'<dl><dt><strong>'. __('Transition effects:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Select one of the effects to change the transition between each image.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Speed the transition from slide:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Speed that will show the selected transition.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Pause time between transitions:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Time that an image of the slider will be shown, happen until the transition to the next.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Navigation arrows:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, the use of arrows to advance or move back to the images on the slider will appear.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Show navigation arrows only when the mouse is on the slide:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, the navigation arrows will only appear when the mouse cursor is on the slider.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Show the navigation bullets:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, the user can move forward or backward through the images also utilize the bullets below the slider', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Use left and right on the keyboard:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, the user can move forward or backward through the images of the slider left navigation arrows (&larr;) and right (&rarr;) on the keyboard.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Stop the animation while the mouse is on the slide:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, animation (caption and transition) will not happen while the mouse is on the slider.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Force transition manual:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('If this option is enabled, the transition will not happen automatically.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Background color of the caption:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Changes the background color of the caption of every image of the slider. To change the color click the button next to the text field, and select the desired color in the color picker.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Text color of the caption:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Changes the color of the caption text of all the image of the slider. To change the color click the button next to the text field, and select the desired color in the color picker.', 'nivoslider4wp') .'</dd>'.
+									'<dt><strong>'. __('Opacity of the background caption:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Changes the background transparency of the caption of every image of the slider. Enter the desired value within a range from 0.0 to 10.0, eg 0.3.', 'nivoslider4wp') .'</dd>'.
+									'</dl>'.
+									'<h3>'. __('Advanced Options:', 'nivoslider4wp') .'</h3>'.
+									'<dl><dt><strong>'. __('Image quality:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Set value between 0 at 100 for define the quality of cut the images. Quality ranges from 0 (worst quality, smaller file) to 100 (best quality, biggest file). The default is 80.', 'nivoslider4wp') .'</dd>'.
+										'<dt><strong>'. __('Insert JavaScript:', 'nivoslider4wp') .'</strong></dt>'.
+										'<dd>'. __('Select the options head or footer for define where will loaded the scripts Jquery Plugin Nivo Slider. It is recommended to load the JavaScript in the <strong>footer</strong> because it allows a faster loading page, but the slider is loaded last.', 'nivoslider4wp') .'</dd>'.
+									'</dl>'
+				) );
+			}
+		}
 	}
 
 	function nivoslider4wp_panel() {
