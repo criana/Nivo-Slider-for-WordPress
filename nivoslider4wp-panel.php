@@ -69,7 +69,7 @@
 				imagecopyresampled($ns4wp_image_crop, $ns4wp_image_src, 0, 0, $_POST['x'],$_POST['y'], get_option('nivoslider4wp_width'), get_option('nivoslider4wp_height'), $_POST['w'], $_POST['h']);
 				if(get_option('nivoslider4wp_imageQuality') > 90)
 				{
-					// qualidade do PNG Varia entre 0 - 9, diferente do Jpeg que é entre 0 - 100
+					// qualidade do PNG Varia entre 0 - 9, diferente do Jpeg que Ã© entre 0 - 100
 					imagepng($ns4wp_image_crop,$ns4wp_filesdir.$_POST['nivoslider4wp_file_id'].'_s.'.$_POST['nivoslider4wp_file_type'], 9);
 				}
 				else
