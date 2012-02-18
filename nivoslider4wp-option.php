@@ -213,7 +213,7 @@ if (isset($_POST['options'])) {
 			<form target="pagseguro" action="https://pagseguro.uol.com.br/checkout/doacao.jhtml" method="post">
 				<input type="hidden" name="email_cobranca" value="marcelotorres.ib@gmail.com" />
 				<input type="hidden" name="moeda" value="BRL" />
-				<input type="image" src="https://p.simg.uol.com.br/out/pagseguro/i/botoes/doacoes/120x53-doar.gif" name="submit" alt="Pague com PagSeguro - é rápido, grátis e seguro!" />
+				<input type="image" src="https://p.simg.uol.com.br/out/pagseguro/i/botoes/doacoes/120x53-doar.gif" name="submit" alt="Pague com PagSeguro - Ã© rÃ¡pido, grÃ¡tis e seguro!" />
 			</form>
 			</div>
 			<!-- FINAL FORMULARIO BOTAO PAGSEGURO -->
@@ -222,7 +222,7 @@ if (isset($_POST['options'])) {
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
 				<input type="hidden" name="cmd" value="_s-xclick">
 				<input type="hidden" name="hosted_button_id" value="TMQ9JKXQ7WPKA">
-				<input type="image" src="https://www.paypal.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - A maneira mais fácil e segura de efetuar pagamentos on-line!">
+				<input type="image" src="https://www.paypal.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - A maneira mais fÃ¡cil e segura de efetuar pagamentos on-line!">
 				<img alt="" border="0" src="https://www.paypal.com/pt_BR/i/scr/pixel.gif" width="1" height="1">
 			</form>
 			</div>
